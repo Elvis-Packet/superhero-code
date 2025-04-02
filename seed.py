@@ -10,17 +10,11 @@ def seed_data():
             # Ensure database schema is created
             db.create_all()
 
-            # Clear existing data safely with debug statements
-            print("Clearing HeroPower data...")
-            db.session.query(HeroPower).delete(synchronize_session=False)
-            print("Clearing Power data...")
-            db.session.query(Power).delete(synchronize_session=False)
-            print("Clearing Hero data...")
-            db.session.query(Hero).delete(synchronize_session=False)
-            print("Clearing Superhero data...")
-            db.session.query(Superhero).delete(synchronize_session=False)
-            print("Clearing City data...")
-            db.session.query(City).delete(synchronize_session=False)
+            # Clear existing data dynamically
+            models = [HeroPower, Power, Hero, Superhero, City]
+            for model in models:
+                print(f"Clearing data for {model.__name__}...")
+                db.session.query(model).delete(synchronize_session=False)
             db.session.commit()
         except Exception as e:
             db.session.rollback()
@@ -28,7 +22,7 @@ def seed_data():
             return
 
         # Seed Cities
-        cities = [City(name=fake.city()) for _ in range(5)]
+        cities = [City(name=fake.city()) for _ in range(70)]
         db.session.add_all(cities)
         db.session.commit()
 
